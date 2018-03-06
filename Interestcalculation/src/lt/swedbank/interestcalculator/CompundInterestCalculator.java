@@ -1,6 +1,5 @@
 package lt.swedbank.interestcalculator;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -12,56 +11,59 @@ public class CompundInterestCalculator {
         double amount;
         double interestRate;
         int periodLength;
-        String compundfreq;
+        String compoundFreq;
         int frequency;
-        double interest = 0;
-        double interestAmounts;
-        ArrayList<Double> interestAmountArray = new ArrayList<>();
+        double interest;
+        double intermediateInterest;
+        boolean check = true;
 
 
-        System.out.println("Enter amount of money: ");
+        Double[][] interestAmountArray;
+        ArrayList<Double> interestRateArray = new ArrayList<>();
+
+
+        System.out.print("Enter amount of money: ");
         amount = Integer.parseInt(scanner.nextLine());
 
-        System.out.println("Enter interest rate: ");
-        interestRate = (Double.parseDouble(scanner.nextLine()) / 100);
-
-        System.out.println("Enter period length");
-        periodLength = Integer.parseInt(scanner.nextLine());
-
-        System.out.println("Enter compound frequency");
-        compundfreq = scanner.nextLine();
-
-        double totalAmount = 0;
-        frequency = findFrequency(compundfreq);
-
-
-        double b;
-
-        for (int i = 0; i < periodLength*frequency; i++) {
-            double temp = 0;
-
-            temp = interest + amount;
-
-            interest = amount * Math.pow((1 + (interestRate / frequency)), frequency * (i + 1)) - amount;
-
-
-            b = temp * Math.pow((1 + (interestRate / frequency)), frequency) - temp;
-
-
-            interestAmountArray.add(b);
-            totalAmount = interest;
-
-            if(i % frequency == 0) {
-                System.out.printf("Interest amount after year %d: %.2f\n", i, interest);
+        while (check) {
+            System.out.print("Enter interest rate (%): ");
+            interestRate = (Double.parseDouble(scanner.nextLine()) / 100);
+            if (interestRate == 0) {
+                check = false;
+            } else {
+                interestRateArray.add(interestRate);
             }
         }
-        System.out.printf("Total amount %.2f\n", totalAmount + amount);
-        System.out.println(interestAmountArray.toString());
+
+
+        System.out.print("Enter period length: ");
+        periodLength = Integer.parseInt(scanner.nextLine());
+
+        System.out.print("Enter compound frequency: ");
+        compoundFreq = scanner.nextLine();
+
+        frequency = findFrequency(compoundFreq);
+        double intermediateAmount;
+        interestAmountArray = new Double[interestRateArray.size()][periodLength * frequency];
+
+        for (int i = 0; i < interestRateArray.size(); i++) {
+            interest = 0;
+            for (int j = 0; j < periodLength * frequency; j++) {
+
+                intermediateAmount = interest + amount;
+                interest = amount * Math.pow((1 + (interestRateArray.get(i) / frequency)), frequency * (j + 1)) - amount;
+                intermediateInterest = intermediateAmount * Math.pow((1 + (interestRateArray.get(i) / frequency)), frequency) - intermediateAmount;
+                interestAmountArray[i][j] = intermediateInterest;
+
+            }
+        }
+
+        printArray(interestAmountArray);
     }
 
-    public static int findFrequency(String compundfreq) {
-        int frequency = 0;
-        switch (compundfreq) {
+    private static int findFrequency(String compoundFreq) {
+        int frequency;
+        switch (compoundFreq) {
             case "D":
                 frequency = 365;
                 break;
@@ -86,4 +88,16 @@ public class CompundInterestCalculator {
         }
         return frequency;
     }
+
+    private static void printArray(Double[][] array) {
+        System.out.println();
+        for (Double[] i : array) {
+            for (double j : i) {
+                System.out.printf("%.2f", j);
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
+    }
+
 }
