@@ -2,8 +2,13 @@ package lt.swedbank.carleasing;
 
 public class CarLeasing {
     public static void main(String[] args) {
+        //Do not separate variable declaration from it's initialization. In Java, optimally, you should declare
+        // a variable as close to a place in code where it is first used/needed.
         double carPrice;
         int downPaymentSize;
+        //This should be declared as a constant outside the main(...) method
+        //Hint:
+        //private static final double AGREEMENT_FEE = 150;
         final double agreemetFee = 150;
 
         System.out.println("Input: " + "\n" + args[0] + " " + args[1]);
@@ -29,6 +34,8 @@ public class CarLeasing {
         System.out.println("Down payment size: " + args[1] + "%\n");
 
 
+        //Do not truncate your variable names (like in C). Variable/method names should be as descriptive as possible.
+        //These variable are used only once. There are not needed, you can call these methods directly in "if" statement,
         boolean cPriceNegCheck = isCarPriceNotNegative(carPrice);
         boolean cPriceZeroCheck = isCarPriceNotZero(carPrice);
         boolean dPaySizeCheck = isDownPaymentSizeValid(downPaymentSize);
@@ -50,6 +57,7 @@ public class CarLeasing {
     }
 
 
+    //If a method is not used outside a class, always declare it as private
     public static double calculateDownPayment(double carPrice, int downPaymentSize) {
         return (carPrice * downPaymentSize) / 100;
     }
@@ -62,7 +70,8 @@ public class CarLeasing {
         return downpayment + agreementFee;
     }
 
-
+    //Do not mix validation and error message printing in the same method.
+    //Check in one method, print in another if check fails.
     public static boolean isCarPriceNotZero(double carPrice) {
         if (carPrice == 0) {
             priceZeroMessage(carPrice);
